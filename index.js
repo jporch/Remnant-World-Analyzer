@@ -65,7 +65,6 @@ function loadFile(o) {
 
 
 function getWorldData(textArray, worldMode) {
-
     zones = {}
 
     zones["Earth"] = {}
@@ -165,7 +164,9 @@ function getWorldData(textArray, worldMode) {
         //look for Item drops
         if (textLine.search("Quest_Event") != -1) {
             eventType = "Item Drop"
+            if (textLine.includes('TraitBook')) continue;   // TODO: handle properly instead of punting
             eventName = textLine.split("/")[3].split("_")[2]
+
 
             // edge case for out of order items
             if (textLine.split("/")[1].split("_")[1] != textArray[i - 1].split("/")[1].split("_")[1]) {
@@ -250,13 +251,13 @@ function showDataFile(e, o){
 
     $('tr:not(.header-row)').remove()
 
-    text = e.target.result
+    text = e.target.result.split('/Game/World_Base/Quests/Quest_Ward13/Quest_Ward13_Template.Quest_Ward13_Template')[1]
     text = text.split("/Game/Campaign_Main/Quest_Campaign_Ward13.Quest_Campaign_Ward13")[0]
     text = text.split("/Game/Campaign_Main/Quest_Campaign_City.Quest_Campaign_City")[1].replace(/Game/g,"\n")
 
     textArray = text.split("\n")
 
-   adText = e.target.result
+   adText = e.target.result.split('/Game/World_Base/Quests/Quest_Ward13/Quest_Ward13_Template.Quest_Ward13_Template')[2]
 
    adText = adText.split("\n")
    tempList = []
@@ -267,7 +268,7 @@ function showDataFile(e, o){
        tempList.push(adText[i])
      }
    }
-   adText = tempList[1]
+   adText = tempList[3]
     if (adText != undefined) {
         adventureMode = true
         adText = adText.replace(/Game/g,"\n")
