@@ -83,13 +83,16 @@ function getWorldData(textArray, worldMode) {
     var currentSublocation = "";
 
     for (i = 0; i < textArray.length; i++) {
-        var zone;
-        var eventType;
-        var eventName;
-        var lastEventname;
-        var inSmallDungeon = true;
+        let html;
+        let zone;
+        let eventType;
+        let eventName;
+        let lastEventname;
+        let inSmallDungeon = true;
 
         textLine = textArray[i]
+
+        if (textLine.split("/").length < 4) { continue; }
 
         //translate world/region names to readable text
         if ( textLine.search("World_City") != -1) {
@@ -164,7 +167,6 @@ function getWorldData(textArray, worldMode) {
         //look for Item drops
         if (textLine.search("Quest_Event") != -1) {
             eventType = "Item Drop"
-            if (textLine.includes('TraitBook')) continue;   // TODO: handle properly instead of punting
             eventName = textLine.split("/")[3].split("_")[2]
 
 
@@ -223,7 +225,7 @@ function getWorldData(textArray, worldMode) {
                         } else {
                             mainLocationText = currentMainLocation.split(/(?=[A-Z])/).join(' ') + ": "
                         }
-                        html = "<tr><td>" + zone + ": " + mainLocationText + currentSublocation.split(/(?=[A-Z])/).join(' ') +  "</td><td>" + eventType + "</td><td>" + eventName.split(/(?=[A-Z])/).join(' ') + "</td></tr>"
+                        html = "<tr><td>" + zone + ": " + mainLocationText + currentSublocation.split(/(?=[A-Z])/).join(' ') + "</td><td>" + eventType + "</td><td>" + eventName.split(/(?=[A-Z])/).join(' ') + "</td></tr>"
                     }
                 } else {
                     zones[zone][eventType] = eventName
@@ -234,12 +236,13 @@ function getWorldData(textArray, worldMode) {
                             mainLocationText = currentMainLocation.split(/(?=[A-Z])/).join(' ') + ": "
                         }
 
-                        html = "<tr><td>" + zone + ": " + mainLocationText + currentSublocation.split(/(?=[A-Z])/).join(' ') +  "</td><td>" + eventType + "</td><td>" + eventName.split(/(?=[A-Z])/).join(' ') + "</td></tr>"
+                        html = "<tr><td>" + zone + ": " + mainLocationText + currentSublocation.split(/(?=[A-Z])/).join(' ') + "</td><td>" + eventType + "</td><td>" + eventName.split(/(?=[A-Z])/).join(' ') + "</td></tr>"
                 }
                 $(worldMode).append(html)
             }
-            $('#filters, #filters-right').show()
+            
         }
+        $('#filters, #filters-right').show()
     }
 
 
@@ -248,7 +251,6 @@ function getWorldData(textArray, worldMode) {
 
 
 function showDataFile(e, o){
-
     $('tr:not(.header-row)').remove()
 
     text = e.target.result.split('/Game/World_Base/Quests/Quest_Ward13/Quest_Ward13_Template.Quest_Ward13_Template')[1]
@@ -268,7 +270,8 @@ function showDataFile(e, o){
        tempList.push(adText[i])
      }
    }
-   adText = tempList[3]
+   adText = tempList[tempList.length-1]
+
     if (adText != undefined) {
         adventureMode = true
         adText = adText.replace(/Game/g,"\n")
